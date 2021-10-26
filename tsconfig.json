@@ -1,0 +1,23 @@
+{
+  "include": ["src/**/*"],
+
+  "exclude": ["node_modules/*", "public/*"],
+
+  "compilerOptions": {
+    "target": "es2015",
+    "lib": ["esnext", "dom", "dom.iterable", "scripthost"],
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "jsxFactory": "createVnodeFromJsxNode",
+    "jsxFragmentFactory": "jsxFragment",
+    "strict": true,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "sourceMap": true
+  }
+}

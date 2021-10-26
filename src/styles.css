@@ -1,0 +1,118 @@
+html {
+  box-sizing: border-box;
+  color: #2c3e50;
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.2;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0 0 10px;
+  padding: 0;
+}
+
+input {
+  width: 320px;
+}
+
+p {
+  margin: 4px 0 12px 0;
+  padding: 0;
+}
+p:last-child {
+  margin-bottom: 0;
+}
+
+section {
+  border: 1px solid black;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  padding: 8px;
+}
+section:last-child {
+  margin-bottom: 0;
+}
+
+table {
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+tr {
+  border-bottom: 1px solid black;
+}
+tr:nth-child(even) {
+  background-color: #f0f0f0;
+}
+td {
+  padding: 4px 16px 4px 0;
+}
+td:last-child {
+  padding-right: 0;
+}
+
+.row {
+  display: flex;
+  flex-direction: row;
+}
+.row > * {
+  margin-right: 8px;
+}
+.row > *:last-child {
+  margin-right: 0;
+}
+
+.col {
+  display: flex;
+  flex-direction: column;
+}
+.col > * {
+  margin-bottom: 8px;
+}
+.col > *:last-child {
+  margin-bottom: 0;
+}
+
+.center {
+  text-align: center;
+}
+
+.center-block {
+  display: block;
+  margin: 0 auto;
+}
+
+/* App */
+#app {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* TodoList */
+#todo-list > ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#todo-list > ul > li {
+  border-bottom: 1px solid black;
+  margin-bottom: 8px;
+  padding: 4px 0;
+  align-items: center;
+}
+#todo-list > ul > li:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,31 @@
+{
+  "name": "workframe-example",
+  "version": "1.0.0",
+  "description": "Workframe example app",
+  "author": "Wyatt Baldwin",
+  "license": "MIT",
+  "homepage": "https://github.com/wylee/workframe-example#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/wylee/workframe-example.git"
+  },
+  "directories": {
+    "src": "./src"
+  },
+  "files": [
+    "src"
+  ],
+  "devDependencies": {
+    "dotenv": "^10.0.0",
+    "esbuild": "^0.13.12",
+    "lodash": "^4.17.21",
+    "prettier": "^2.4.1",
+    "workframe": "file:../workframe.js"
+  },
+  "scripts": {
+    "start": "workframe serve",
+    "clean": "rm -rf public/build",
+    "build": "node scripts/build.js",
+    "watch": "node scripts/build.js --watch"
+  }
+}
