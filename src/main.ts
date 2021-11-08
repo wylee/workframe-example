@@ -1,10 +1,7 @@
 import { mount } from "workframe";
-import App, { State as AppState } from "./app";
-import "./styles.css";
+import { INITIAL_STATE, updater } from "./state";
+import App from "./app";
 
-mount<AppState>(App, "#mount-point", {
-  name: "",
-  location: "",
-  weather: null,
-  fetchingWeather: false,
-});
+const updateState = mount(App, "#mount-point", INITIAL_STATE, updater);
+
+export default updateState;

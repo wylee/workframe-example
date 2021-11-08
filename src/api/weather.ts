@@ -1,14 +1,15 @@
 // @ts-ignore
-import { WORKFRAME_OPEN_WEATHER_API_KEY } from "env";
+import { WORKFRAME_DEBUG, WORKFRAME_OPEN_WEATHER_API_KEY } from "env";
 
 import capitalize from "lodash/capitalize";
 
 const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
 const WEATHER_API_KEY = WORKFRAME_OPEN_WEATHER_API_KEY;
-const FIVE_MINUTES_IN_MS = 300000;
+const CACHE_MS = WORKFRAME_DEBUG ? 1 * 60 * 1000 : 5 * 60 * 1000;
 
 type CardinalDirection = "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
 
+// Schema for OpenWeather data
 interface ApiData {
   name: string;
   message: string;
@@ -56,6 +57,12 @@ export interface WeatherData {
   error: string | null;
 }
 
+export function makeCacheKey(location: string) {
+  const locationKey = location.replace(/\s+/g, "").toLowerCase();
+  const cacheKey = `weather:${locationKey}`;
+  return cacheKey;
+}
+
 export default async function fetchWeatherData(
   location: string
 ): Promise<WeatherData> {
@@ -67,14 +74,13 @@ export default async function fetchWeatherData(
 
   const now = new Date();
   const nowTimestamp = now.getTime();
-  const locationKey = location.replace(/\s+/, "").toLowerCase();
-  const cacheKey = `weatherData:${locationKey}`;
+  const cacheKey = makeCacheKey(location);
   const cachedWeatherData = localStorage.getItem(cacheKey);
 
   if (cachedWeatherData) {
     const parsedWeatherData: WeatherData = JSON.parse(cachedWeatherData);
     const data = parsedWeatherData.data;
-    if (data && nowTimestamp - data.fetchedAt < FIVE_MINUTES_IN_MS) {
+    if (data && nowTimestamp - data.fetchedAt < CACHE_MS) {
       return parsedWeatherData;
     }
   }
@@ -91,45 +97,42 @@ export default async function fetchWeatherData(
 
   const data: ApiData = await response.json();
 
-  console.log(data);
+  let result;
 
   if (response.status >= 400) {
-    return { data: null, error: capitalize(data.message) };
+    result = { data: null, error: capitalize(data.message) };
+  } else {
+    const [windDirection, windArrow] = getWindDirectionAndArrow(data.wind.deg);
+    result = {
+      data: {
+        location: data.name,
+        coordinates: {
+          latitude: data.coord.lat,
+          longitude: data.coord.lon,
+        },
+        temperature: data.main.temp,
+        low: data.main.temp_min,
+        high: data.main.temp_max,
+        humidity: data.main.humidity,
+        cloudiness: data.clouds.all,
+        descriptions: data.weather.map(
+          ({ main, description }) => `${main} - ${description}`
+        ),
+        wind: {
+          speed: data.wind.speed,
+          degrees: data.wind.deg,
+          direction: windDirection,
+          arrow: windArrow,
+        },
+        fetchedAt: nowTimestamp,
+      },
+      error: null,
+    };
   }
 
-  const [windDirection, windArrow] = getWindDirectionAndArrow(data.wind.deg);
+  localStorage.setItem(cacheKey, JSON.stringify(result));
 
-  const weatherData = {
-    data: {
-      location: data.name,
-      coordinates: {
-        latitude: data.coord.lat,
-        longitude: data.coord.lon,
-      },
-      temperature: data.main.temp,
-      low: data.main.temp_min,
-      high: data.main.temp_max,
-      humidity: data.main.humidity,
-      cloudiness: data.clouds.all,
-      descriptions: data.weather.map(
-        ({ main, description }) => `${main} - ${description}`
-      ),
-      wind: {
-        speed: data.wind.speed,
-        degrees: data.wind.deg,
-        direction: windDirection,
-        arrow: windArrow,
-      },
-      fetchedAt: nowTimestamp,
-    },
-    error: null,
-  };
-
-  console.log(weatherData);
-
-  localStorage.setItem(cacheKey, JSON.stringify(weatherData));
-
-  return weatherData;
+  return result;
 }
 
 /** Convert wind direction to arrow

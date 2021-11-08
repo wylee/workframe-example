@@ -1,32 +1,14 @@
 import debounce from "lodash/debounce";
 import { onRender, onMount } from "workframe";
+import { State } from "./state";
+import { setName, setLocation, clearMainData } from "./actions";
 import TodoList from "./todo-list";
-import fetchWeatherData, { WeatherData } from "./weather-api";
 
-export interface State {
-  name: string;
-  location: string;
-  weather: WeatherData | null;
-  fetchingWeather: boolean;
-}
-
-// XXX: Using any as the type here is a kludge
-export default function App({ set, reset }: any) {
-  onMount(async () => {
+export default function App() {
+  onMount(async (state: State) => {
     console.log("mounted app");
-    const name = localStorage.getItem("name");
-    const location = localStorage.getItem("location");
-    if (name) {
-      set("name", name);
-    }
-    if (location) {
-      set("location", location);
-      set("fetchingWeather", true);
-      const weatherData = await fetchWeatherData(location);
-      set({
-        weather: { ...weatherData },
-        fetchingWeather: false,
-      });
+    if (state.location) {
+      await setLocation(state.location);
     }
   });
 
@@ -34,31 +16,17 @@ export default function App({ set, reset }: any) {
     console.log("rendered app");
   });
 
-  const clear = () => {
-    localStorage.removeItem("name");
-    localStorage.removeItem("location");
-    reset();
-  };
+  const onSetName = debounce((event: any) => {
+    setName(event.target.value);
+  }, 100);
 
-  const setName = debounce((name: string) => {
-    set("name", name);
-    localStorage.setItem("name", name);
-  }, 250);
-
-  const setLocation = debounce(async (location: string) => {
-    set("location", location);
-    set("fetchingWeather", true);
-    const weatherData = await fetchWeatherData(location);
-    set({
-      weather: { ...weatherData },
-      fetchingWeather: false,
-    });
-    localStorage.setItem("location", location);
-  }, 500);
+  const onSetLocation = debounce(async (event: any) => {
+    await setLocation(event.target.value);
+  }, 1000);
 
   return (state: State) => {
-    const { name, location, weather, fetchingWeather } = state;
     const now = new Date();
+    const { name, location, weather, fetchingWeather, todo } = state;
 
     return (
       <div id="app">
@@ -82,14 +50,14 @@ export default function App({ set, reset }: any) {
               value={name}
               placeholder="Enter your name"
               autofocus="autofocus"
-              onInput={(e: any) => setName(e.target.value)}
+              onInput={onSetName}
             />
 
             <input
               value={location}
               placeholder="Enter your location"
               autofocus="autofocus"
-              onInput={(e: any) => setLocation(e.target.value)}
+              onInput={onSetLocation}
             />
             <small>
               <i>
@@ -98,7 +66,7 @@ export default function App({ set, reset }: any) {
               </i>
             </small>
 
-            <button type="button" onClick={clear} style="width: 320px">
+            <button type="button" onClick={clearMainData} style="width: 320px">
               Clear Name & Location
             </button>
           </div>{" "}
@@ -175,7 +143,7 @@ export default function App({ set, reset }: any) {
         <section title="Todo List">
           <h2>Todo</h2>
 
-          <TodoList items={[]} />
+          <TodoList items={todo.items} />
         </section>
       </div>
     );

@@ -1,63 +1,16 @@
 import { onRender, onMount } from "workframe";
+import { TodoListState as State } from "./state";
+import { addTodoItem } from "./actions";
 import TodoItem from "./todo-item";
 
-interface State {
-  items: string[];
-}
-
-// XXX: Using any as the type here is a kludge
-export default function TodoList({ set }: any) {
+export default function TodoList() {
   onMount(() => {
     console.log("mounted todo-list");
-    set("items", getCachedItems());
   });
 
   onRender(() => {
     console.log("rendered todo-list");
   });
-
-  const addItem = (item: string) => {
-    if (!item.trim().length) {
-      return;
-    }
-    set("items", (items: string[]) => [...items, item]);
-    const items = getCachedItems();
-    items.push(item);
-    setCachedItems(items);
-  };
-
-  const updateItem = (index: number, newValue: string) => {
-    set("items", (items: string[]) => [
-      ...items.slice(0, index),
-      newValue,
-      ...items.slice(index + 1),
-    ]);
-    const items = getCachedItems();
-    items[index] = newValue;
-    setCachedItems(items);
-  };
-
-  const removeItem = (index: number) => {
-    set("items", (items: string[]) => [
-      ...items.slice(0, index),
-      ...items.slice(index + 1),
-    ]);
-    let items = getCachedItems();
-    items = [...items.slice(0, index), ...items.slice(index + 1)];
-    setCachedItems(items);
-  };
-
-  const getCachedItems = (): string[] => {
-    const cachedItems = localStorage.getItem("todo-items");
-    if (cachedItems) {
-      return JSON.parse(cachedItems);
-    }
-    return [];
-  };
-
-  const setCachedItems = (items: string[]): void => {
-    localStorage.setItem("todo-items", JSON.stringify(items));
-  };
 
   return (state: State) => {
     const { items } = state;
@@ -66,7 +19,7 @@ export default function TodoList({ set }: any) {
         <form
           onSubmit={(e: any) => {
             const nameEl = e.target.elements.name;
-            addItem(nameEl.value);
+            addTodoItem(nameEl.value);
             nameEl.value = "";
           }}
         >
@@ -86,12 +39,7 @@ export default function TodoList({ set }: any) {
         {items?.length ? (
           <ul>
             {items.map((item, i) => (
-              <TodoItem
-                item={item}
-                key={i}
-                update={(newValue: string) => updateItem(i, newValue)}
-                remove={() => removeItem(i)}
-              />
+              <TodoItem key={i} item={item} />
             ))}
           </ul>
         ) : (

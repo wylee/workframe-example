@@ -1,10 +1,9 @@
 import { onRender, onMount } from "workframe";
+import { updateTodoItem, removeTodoItem } from "./actions";
 
 interface State {
   key: number;
   item: string;
-  update: (newValue: string) => void;
-  remove: () => void;
 }
 
 export default function TodoItem() {
@@ -17,7 +16,7 @@ export default function TodoItem() {
   });
 
   return (state: State) => {
-    const { key, item, update, remove } = state;
+    const { key, item } = state;
     return (
       <li class="row">
         <span style="width: 16px;">{key + 1}.</span>
@@ -25,9 +24,13 @@ export default function TodoItem() {
           name="item"
           value={item}
           style="flex: 1;"
-          onInput={(e) => update(e.target.value)}
+          onInput={(e) => updateTodoItem(key, e.target.value)}
         />
-        <button type="button" title="Remove this item" onClick={() => remove()}>
+        <button
+          type="button"
+          title="Remove this item"
+          onClick={() => removeTodoItem(key)}
+        >
           &times;
         </button>
       </li>
