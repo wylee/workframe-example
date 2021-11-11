@@ -6,6 +6,7 @@ export interface TodoListState {
 }
 
 export interface State {
+  loadedAt?: Date;
   name: string;
   location: string;
   weather: WeatherData | null;
@@ -28,6 +29,7 @@ function getCachedTodoItems(): string[] {
 }
 
 export const INITIAL_STATE: State = {
+  loadedAt: undefined,
   name,
   location,
   weather,
@@ -38,6 +40,7 @@ export const INITIAL_STATE: State = {
 };
 
 export type ActionType =
+  | "SET_LOADED_AT"
   | "SET_NAME"
   | "SET_LOCATION"
   | "SET_WEATHER_DATA"
@@ -48,9 +51,12 @@ export type ActionType =
 
 export function updater(state: State, action: Action<ActionType>) {
   const { type, data } = action;
-  console.debug("ACTION:", type, "DATA:", data);
-
   switch (type) {
+    case "SET_LOADED_AT":
+      return {
+        ...state,
+        loadedAt: data.loadedAt,
+      };
     case "SET_NAME":
       return {
         ...state,

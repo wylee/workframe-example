@@ -3,6 +3,10 @@ import fetchWeatherData from "./api/weather";
 
 // Main
 
+export function setLoadedAt(date: Date) {
+  return updateState({ type: "SET_LOADED_AT", data: { loadedAt: date } });
+}
+
 export function setName(name: string) {
   const state = updateState({ type: "SET_NAME", data: { name } });
   localStorage.setItem("name", state.name);
@@ -33,9 +37,7 @@ function setCachedTodoItems(items: string[]): void {
 }
 
 export function addTodoItem(item: string) {
-  console.log("adding todo item:", item);
   const state = updateState({ type: "ADD_TODO_ITEM", data: { item } });
-  console.log("items:", state.todo.items);
   setCachedTodoItems(state.todo.items);
 }
 

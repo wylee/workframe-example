@@ -1,14 +1,15 @@
 import debounce from "lodash/debounce";
 import { onRender, onMount } from "workframe";
 import { State } from "./state";
-import { setName, setLocation, clearMainData } from "./actions";
+import { setLoadedAt, setName, setLocation, clearMainData } from "./actions";
 import TodoList from "./todo-list";
 
 export default function App() {
-  onMount(async (state: State) => {
+  onMount(async (initialState: State) => {
     console.log("mounted app");
-    if (state.location) {
-      await setLocation(state.location);
+    setLoadedAt(new Date());
+    if (initialState.location) {
+      await setLocation(initialState.location);
     }
   });
 
@@ -25,8 +26,7 @@ export default function App() {
   }, 1000);
 
   return (state: State) => {
-    const now = new Date();
-    const { name, location, weather, fetchingWeather, todo } = state;
+    const { loadedAt, name, location, weather, fetchingWeather, todo } = state;
 
     return (
       <div id="app">
@@ -43,7 +43,9 @@ export default function App() {
             </big>
           </p>
           <p>
-            {now.toLocaleDateString()} at {now.toLocaleTimeString()}
+            {loadedAt
+              ? `${loadedAt.toLocaleDateString()} at ${loadedAt.toLocaleTimeString()}`
+              : "..."}
           </p>
           <div class="col">
             <input
@@ -73,7 +75,7 @@ export default function App() {
         </section>
 
         <section title="Weather">
-          <h2>Weather in{weather?.data ? ` ${weather.data.location}` : ""}</h2>
+          <h2>Weather{weather?.data ? ` in ${weather.data.location}` : ""}</h2>
 
           {weather?.error && <p class="error">{weather.error}</p>}
 
