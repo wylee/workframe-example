@@ -1,19 +1,19 @@
 import { onRender, onMount } from "workframe";
-import { TodoListState as State } from "./state";
+import { AppState, TodoListState } from "./state";
 import { addTodoItem } from "./actions";
 import TodoItem from "./todo-item";
 
 export default function TodoList() {
-  onMount(() => {
-    console.log("mounted todo-list");
+  onMount(({ todo }: AppState) => {
+    console.log("mounted todo-list", todo.items);
   });
 
-  onRender(() => {
-    console.log("rendered todo-list");
+  onRender(({ todo }: AppState) => {
+    console.log("rendered todo-list", todo.items);
   });
 
-  return (state: State) => {
-    const { items } = state;
+  return (currentState: TodoListState) => {
+    const { items } = currentState;
     return (
       <div id="todo-list">
         <form

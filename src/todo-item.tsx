@@ -1,7 +1,7 @@
 import { onRender, onMount } from "workframe";
 import { updateTodoItem, removeTodoItem } from "./actions";
 
-interface State {
+interface TodoItemState {
   key: number;
   item: string;
 }
@@ -15,8 +15,8 @@ export default function TodoItem() {
     console.log("rendered todo-item");
   });
 
-  return (state: State) => {
-    const { key, item } = state;
+  return (currentState: TodoItemState) => {
+    const { key, item } = currentState;
     return (
       <li class="row">
         <span style="width: 16px;">{key + 1}.</span>

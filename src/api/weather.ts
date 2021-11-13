@@ -5,7 +5,7 @@ import capitalize from "lodash/capitalize";
 
 const WEATHER_API_URL = "https://api.openweathermap.org/data/2.5/weather";
 const WEATHER_API_KEY = WORKFRAME_OPEN_WEATHER_API_KEY;
-const CACHE_MS = WORKFRAME_DEBUG ? 1 * 60 * 1000 : 5 * 60 * 1000;
+const CACHE_MS = (WORKFRAME_DEBUG ? 1 : 5) * 60 * 1000;
 
 type CardinalDirection = "N" | "NE" | "E" | "SE" | "S" | "SW" | "W" | "NW";
 

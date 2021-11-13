@@ -5,7 +5,7 @@ export interface TodoListState {
   items: string[];
 }
 
-export interface State {
+export interface AppState {
   loadedAt?: Date;
   name: string;
   location: string;
@@ -28,7 +28,7 @@ function getCachedTodoItems(): string[] {
   return [];
 }
 
-export const INITIAL_STATE: State = {
+export const INITIAL_STATE: AppState = {
   loadedAt: undefined,
   name,
   location,
@@ -49,7 +49,7 @@ export type ActionType =
   | "UPDATE_TODO_ITEM"
   | "REMOVE_TODO_ITEM";
 
-export function updater(state: State, action: Action<ActionType>) {
+export function updater(state: AppState, action: Action<ActionType>) {
   const { type, data } = action;
   switch (type) {
     case "SET_LOADED_AT":

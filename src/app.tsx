@@ -1,19 +1,19 @@
 import debounce from "lodash/debounce";
 import { onRender, onMount } from "workframe";
-import { State } from "./state";
+import { AppState } from "./state";
 import { setLoadedAt, setName, setLocation, clearMainData } from "./actions";
 import TodoList from "./todo-list";
 
-export default function App() {
-  onMount(async (initialState: State) => {
+export default function App(initialState) {
+  onMount(async (state: AppState) => {
     console.log("mounted app");
     setLoadedAt(new Date());
-    if (initialState.location) {
-      await setLocation(initialState.location);
+    if (state.location) {
+      await setLocation(state.location);
     }
   });
 
-  onRender(() => {
+  onRender((state: AppState) => {
     console.log("rendered app");
   });
 
@@ -25,8 +25,9 @@ export default function App() {
     await setLocation(event.target.value);
   }, 1000);
 
-  return (state: State) => {
-    const { loadedAt, name, location, weather, fetchingWeather, todo } = state;
+  return (currentState: AppState) => {
+    const { loadedAt, name, location, weather, fetchingWeather, todo } =
+      currentState;
 
     return (
       <div id="app">
