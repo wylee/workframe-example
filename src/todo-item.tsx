@@ -1,10 +1,6 @@
 import { onRender, onMount } from "workframe";
 import { updateTodoItem, removeTodoItem } from "./actions";
-
-interface TodoItemState {
-  key: number;
-  item: string;
-}
+import { formatDateTime } from "./util";
 
 export default function TodoItem() {
   onMount(() => {
@@ -15,17 +11,15 @@ export default function TodoItem() {
     console.log("rendered todo-item");
   });
 
-  return (currentState: TodoItemState) => {
-    const { key, item } = currentState;
+  return ({ key, text, created }) => {
     return (
-      <li class="row">
-        <span style="width: 16px;">{key + 1}.</span>
+      <li class="todo-item">
         <input
-          name="item"
-          value={item}
-          style="flex: 1;"
+          name="text"
+          value={text}
           onInput={(e) => updateTodoItem(key, e.target.value)}
         />
+        <code class="help">{formatDateTime(created)}</code>
         <button
           type="button"
           title="Remove this item"

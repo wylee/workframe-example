@@ -1,10 +1,6 @@
 import { Action } from "workframe";
 import { WeatherData, makeCacheKey } from "./api/weather";
 
-export interface TodoListState {
-  items: string[];
-}
-
 export interface AppState {
   loadedAt?: Date;
   name: string;
@@ -14,16 +10,28 @@ export interface AppState {
   todo: TodoListState;
 }
 
+export interface TodoListState {
+  items: TodoItem[];
+}
+
+export interface TodoItem {
+  text: string;
+  created: Date;
+}
+
 const name = localStorage.getItem("name") ?? "";
 const location = localStorage.getItem("location") ?? "";
 const cacheKey = makeCacheKey(location);
 const cachedWeather = location ? localStorage.getItem(cacheKey) : null;
 const weather = cachedWeather ? JSON.parse(cachedWeather) : null;
 
-function getCachedTodoItems(): string[] {
+function getCachedTodoItems(): TodoItem[] {
   const cachedItems = localStorage.getItem("todo.items");
   if (cachedItems) {
-    return JSON.parse(cachedItems);
+    return JSON.parse(cachedItems).map((item) => ({
+      ...item,
+      created: new Date(item.created),
+    }));
   }
   return [];
 }
@@ -89,16 +97,15 @@ export function updater(state: AppState, action: Action<ActionType>) {
         },
       };
     case "UPDATE_TODO_ITEM":
-      return {
-        ...state,
-        todo: {
-          items: [
-            ...state.todo.items.slice(0, data.index),
-            data.item,
-            ...state.todo.items.slice(data.index + 1),
-          ],
-        },
-      };
+      const items = state.todo.items;
+      const { index, text } = data;
+      const updatedItem = { ...items[index], text };
+      const updatedItems = [
+        ...items.slice(0, index),
+        updatedItem,
+        ...items.slice(index + 1),
+      ];
+      return { ...state, todo: { items: updatedItems } };
     case "REMOVE_TODO_ITEM":
       return {
         ...state,

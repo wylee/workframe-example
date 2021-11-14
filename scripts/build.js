@@ -9,9 +9,13 @@
  * Step 1 is necessary because esbuild doesn't do type checking although
  * it does compile TypeScript to JavaScript.
  */
+const fs = require("fs");
 const proc = require("child_process");
-const esbuild = require("esbuild");
+
 const dotenv = require("dotenv");
+const esbuild = require("esbuild");
+const postcss = require("postcss");
+const postCssConfig = require("../postcss.config.js");
 
 process.env.NODE_ENV = process.env.NODE_ENV || "dev";
 
@@ -47,6 +51,32 @@ const dotenvPlugin = {
       return {
         contents: JSON.stringify(entries),
         loader: "json",
+      };
+    });
+  },
+};
+
+/**
+ * PostCSS plugin
+ */
+const postCssPlugin = {
+  name: "postcss",
+
+  setup(build) {
+    build.onLoad({ filter: /.\.css$/ }, async (args) => {
+      console.info(`Reading CSS content from ${args.path}...`);
+      const cssContent = fs.readFileSync(args.path);
+      console.info(
+        "Passing CSS content through PostCSS (this may take a while)..."
+      );
+      const result = await postcss(postCssConfig.plugins).process(cssContent, {
+        ...postCssConfig.options,
+        from: args.path,
+      });
+      console.info("Done");
+      return {
+        contents: result.css,
+        loader: "css",
       };
     });
   },
@@ -102,5 +132,5 @@ esbuild.build({
   sourcemap: IS_DEV,
   watch: WATCH,
   logLevel: "info",
-  plugins: [dotenvPlugin, typeCheckPlugin, jsxPlugin],
+  plugins: [dotenvPlugin, typeCheckPlugin, postCssPlugin, jsxPlugin],
 });

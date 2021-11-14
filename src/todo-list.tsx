@@ -17,35 +17,32 @@ export default function TodoList() {
     return (
       <div id="todo-list">
         <form
+          class="row"
           onSubmit={(e: any) => {
             const nameEl = e.target.elements.name;
             addTodoItem(nameEl.value);
             nameEl.value = "";
           }}
         >
-          <div class="col">
-            <b class="center">Add Item</b>
-            <input
-              class="center-block"
-              type="input"
-              name="name"
-              placeholder="Enter item description"
-            />
-          </div>
+          <input
+            class="flex-grow"
+            type="input"
+            name="name"
+            placeholder="Enter item description"
+          />
+          <button type="submit">Add Item</button>
         </form>
-
-        <hr />
 
         {items?.length ? (
           <ul>
-            {items.map((item, i) => (
-              <TodoItem key={i} item={item} />
-            ))}
+            {items
+              .sort((a, b) => b.created.getTime() - a.created.getTime())
+              .map((item, i) => (
+                <TodoItem key={i} {...item} />
+              ))}
           </ul>
         ) : (
-          <p class="center">
-            <big>No items to do!</big>
-          </p>
+          <p class="big mt-2 text-center">No items to do!</p>
         )}
       </div>
     );

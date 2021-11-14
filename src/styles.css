@@ -1,118 +1,125 @@
-html {
-  box-sizing: border-box;
-  color: #2c3e50;
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.2;
+@import "tailwindcss/base";
+@import "tailwindcss/components";
+@import "tailwindcss/utilities";
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  @apply h-screen bg-gray-50 text-gray-700;
 }
 
-*,
-*:before,
-*:after {
-  box-sizing: inherit;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }
 
 h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  margin: 0 0 10px;
-  padding: 0;
+h2 {
+  @apply mb-2 text-gray-800;
+}
+h1 {
+  @apply text-2xl;
 }
 
-input {
-  width: 320px;
+h2 {
+  @apply text-xl;
 }
 
 p {
-  margin: 4px 0 12px 0;
-  padding: 0;
+  @apply mb-1;
 }
 p:last-child {
-  margin-bottom: 0;
+  @apply mb-0;
+}
+
+input,
+textarea {
+  @apply border border-gray-200 rounded shadow-sm;
+}
+input {
+  @apply p-1;
+}
+
+header {
+  @apply mb-4 p-4 h-24 flex items-center bg-gray-300 shadow;
+}
+
+header a {
+  @apply no-underline text-gray-800;
 }
 
 section {
-  border: 1px solid black;
-  border-radius: 4px;
-  margin-bottom: 16px;
-  padding: 8px;
+  @apply mb-4 p-2 border border-gray-300 rounded;
 }
 section:last-child {
-  margin-bottom: 0;
+  @apply mb-0;
 }
+
+/* Tables */
 
 table {
-  border-collapse: collapse;
-  margin: 0;
-  padding: 0;
-  width: 100%;
+  @apply w-full;
 }
-tr {
-  border-bottom: 1px solid black;
-}
-tr:nth-child(even) {
-  background-color: #f0f0f0;
-}
-td {
-  padding: 4px 16px 4px 0;
-}
-td:last-child {
-  padding-right: 0;
+table > tbody > tr:nth-child(even) {
+  @apply bg-gray-100;
 }
 
+/* Layout */
+
 .row {
-  display: flex;
-  flex-direction: row;
-}
-.row > * {
-  margin-right: 8px;
-}
-.row > *:last-child {
-  margin-right: 0;
+  @apply flex flex-row items-center space-x-2;
 }
 
 .col {
-  display: flex;
-  flex-direction: column;
-}
-.col > * {
-  margin-bottom: 8px;
-}
-.col > *:last-child {
-  margin-bottom: 0;
+  @apply flex flex-col justify-items-center space-y-2;
 }
 
-.center {
-  text-align: center;
+/* Buttons */
+
+button,
+.button {
+  @apply p-1 border border-gray-400 rounded shadow-sm;
 }
 
-.center-block {
-  display: block;
-  margin: 0 auto;
+button.primary,
+.button.primary {
+  @apply bg-gray-600 text-gray-50;
+}
+button.danger,
+.button.danger {
+  @apply bg-red-500 text-red-50;
+}
+
+/* Utilities */
+
+.big {
+  @apply text-lg;
+}
+
+.small {
+  @apply text-sm;
+}
+
+.help {
+  @apply text-sm italic;
 }
 
 /* App */
+
 #app {
   max-width: 1200px;
   margin: 0 auto;
 }
 
 /* TodoList */
-#todo-list > ul {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+
+.todo-item {
+  @apply my-2 flex flex-row items-center space-x-2;
 }
-#todo-list > ul > li {
-  border-bottom: 1px solid black;
-  margin-bottom: 8px;
-  padding: 4px 0;
-  align-items: center;
-}
-#todo-list > ul > li:last-child {
-  margin-bottom: 0;
+.todo-item input[name="text"] {
+  @apply flex-1;
 }
